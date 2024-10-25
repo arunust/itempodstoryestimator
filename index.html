@@ -16,6 +16,24 @@
           }
           .container {
               max-width: 1000px;
+              background: white;  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="author" content="arunajithlalithambika">
+      <meta name="organization" content="UST">
+      <meta name="email" content="u33436@ust.com">
+      <title>Story Point Estimator questionnaire for Developers</title>
+      <!-- Bootstrap CSS -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+      <style>
+          body {
+              background-color: #f8f9fa;
+              padding: 20px;
+          }
+          .container {
+              max-width: 1000px;
               background: white;
               padding: 30px;
               border-radius: 10px;
@@ -139,6 +157,85 @@
       </div>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
       <script>
+         const questions = [
+            {
+                category: "Design Review",
+                items: [
+                    { id: 'newDesign', text: 'Is a new design required for the ITEM management interface?', points: 3 },
+                    { id: 'designModification', text: 'Are there significant modifications to existing designs?', points: 2 },
+                    { id: 'designSystem', text: 'Does this story require updates to the design system?', points: 2 },
+                ]
+            },
+            {
+                category: "Development of Form Components",
+                items: [
+                    { id: 'newComponent', text: 'Is a new React component needed for ITEM management?', points: 3 },
+                    { id: 'complexComponent', text: 'Does the story involve creating a complex form component (e.g., dynamic fields, nested forms)?', points: 3 },
+                    { id: 'multipleComponents', text: 'Do we need to add/update/edit multiple UI components?', points: 2 },
+                    { id: 'stateManagement', text: 'Is complex state management required for the form (e.g., using Redux or Context API)?', points: 3 },
+                ]
+            },
+            {
+                category: "Form Validation Implementation",
+                items: [
+                    { id: 'clientValidation', text: 'Is client-side validation required for the ITEM form?', points: 2 },
+                    { id: 'complexValidation', text: 'Are there complex validation rules (e.g., interdependent fields, async validation)?', points: 3 },
+                    { id: 'customValidation', text: 'Do we need to implement custom validation logic specific to Albertsons\' requirements?', points: 2 },
+                ]
+            },
+            {
+                category: "API Integration and Error Handling",
+                items: [
+                    { id: 'newApi', text: 'Is integration with a new API endpoint required?', points: 2 },
+                    { id: 'multipleApiChanges', text: 'Are there multiple API changes or integrations needed?', points: 3 },
+                    { id: 'errorHandling', text: 'Do we need to implement specific error handling for API responses?', points: 2 },
+                    { id: 'dataTransformation', text: 'Is complex data transformation required between the API and the UI?', points: 3 },
+                ]
+            },
+            {
+                category: "Responsive and Accessibility Features",
+                items: [
+                    { id: 'responsiveDesign', text: 'Does the ITEM management interface need to be responsive?', points: 2 },
+                    { id: 'accessibilityWork', text: 'Are there specific accessibility requirements to implement?', points: 2 },
+                    { id: 'mobileOptimization', text: 'Is mobile-specific optimization required for the interface?', points: 2 },
+                ]
+            },
+            {
+                category: "Testing (Unit & Integration)",
+                items: [
+                    { id: 'unitTests', text: 'Are new unit tests required for the components or functions?', points: 2 },
+                    { id: 'integrationTests', text: 'Do we need to write integration tests for the ITEM management flow?', points: 3 },
+                    { id: 'e2eTests', text: 'Is end-to-end testing required for this story?', points: 3 },
+                ]
+            },
+            {
+                category: "Bug Fixing/Refinement",
+                items: [
+                    { id: 'bugFixes', text: 'Are there known bugs that need to be addressed in this story?', points: 2 },
+                    { id: 'performanceIssues', text: 'Do we need to address any performance issues in the ITEM management interface?', points: 3 },
+                    { id: 'refactoring', text: 'Is refactoring of existing code required as part of this story?', points: 2 },
+                ]
+            },
+            {
+                category: "Risk Factors",
+                items: [
+                    { id: 'technicalComplexity', text: 'How would you rate the technical complexity of this story?', type: 'select', options: ['Low', 'Medium', 'High'] },
+                    { id: 'dependencyRisk', text: 'Are there external dependencies that might impact the story?', type: 'select', options: ['No dependencies', 'Some dependencies', 'Critical dependencies'] },
+                    { id: 'securityConcerns', text: 'Are there security concerns that need to be addressed?', type: 'select', options: ['No concerns', 'Minor concerns', 'Major concerns'] },
+                    { id: 'performanceImpact', text: 'What is the expected performance impact of this change?', type: 'select', options: ['Minimal', 'Moderate', 'Significant'] },
+                ]
+            },
+            {
+                category: "Confidence Levels",
+                items: [
+                    { id: 'requirementClarity', text: 'How clear are the requirements for this story?', type: 'select', options: ['Very clear', 'Somewhat clear', 'Unclear'] },
+                    { id: 'teamExperience', text: 'What is the team\'s experience level with the technologies involved?', type: 'select', options: ['High experience', 'Moderate experience', 'Low experience'] },
+                    { id: 'testingConfidence', text: 'How confident are we in our ability to thoroughly test this change?', type: 'select', options: ['Very confident', 'Moderately confident', 'Not very confident'] },
+                    { id: 'stakeholderAlignment', text: 'How aligned are stakeholders on the expected outcome?', type: 'select', options: ['Fully aligned', 'Partially aligned', 'Misaligned'] },
+                ]
+            },
+        ];
+
           function calculateRiskFactor(values) {
               let riskScore = 0;
               values.forEach(value => {
@@ -269,6 +366,8 @@
                   </div>
               `;
           }
+
+          // Keep your existing calculateEffortDistribution function
           function calculateEffortDistribution() {
               const coreDevelopment = parseFloat(document.getElementById('coreDevelopment').value) || 0;
               const requirements = coreDevelopment * 0.15;
@@ -289,7 +388,7 @@
               document.getElementById('totalEffortHours').textContent = totalEffort.toFixed(1);
           }
 
-
+          // Initialize the questionnaire when the page loads
           window.onload = generateQuestionnaire;
       </script>
   </body>
