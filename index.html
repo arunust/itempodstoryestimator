@@ -1,187 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="arunajithlalithambika">
-    <meta name="organization" content="UST">
-    <meta name="email" content="u33436@ust.com">
-    <title>Story Point Estimator questionnaire for Developers</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #333;
-        }
-        h1 {
-            text-align: center;
-        }
-        h2 {
-            margin-top: 20px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-        .question, .risk-factor, .confidence-level {
-            margin-bottom: 10px;
-        }
-        label {
-            display: inline-block;
-            margin-left: 5px;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-        select {
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
-        }
- .effort-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-      }
-      
-      .effort-table th, .effort-table td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: left;
-      }
-      
-      .effort-table th {
-          background-color: #f2f2f2;
-      }
-      
-      .input-section {
-          margin-top: 20px;
-          padding: 15px;
-          background-color: #f8f9fa;
-          border-radius: 5px;
-      }
-      
-      .input-section input {
-          padding: 5px;
-          margin-right: 10px;
-          width: 100px;
-      }
-      
-      .calculate-effort-btn {
-          padding: 5px 15px;
-          background-color: #28a745;
-          color: white;
-          border: none;
-          border-radius: 3px;
-          cursor: pointer;
-      }
-      
-      .calculate-effort-btn:hover {
-          background-color: #218838;
-      }
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="author" content="arunajithlalithambika">
+      <meta name="organization" content="UST">
+      <meta name="email" content="u33436@ust.com">
+      <title>Story Point Estimator questionnaire for Developers</title>
+      <!-- Bootstrap CSS -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+      <style>
+          body {
+              background-color: #f8f9fa;
+              padding: 20px;
+          }
+          .container {
+              max-width: 1000px;
+              background: white;
+              padding: 30px;
+              border-radius: 10px;
+              box-shadow: 0 0 15px rgba(0,0,0,0.1);
+          }
+          .accordion-button:not(.collapsed) {
+              background-color: #e7f1ff;
+              color: #0c63e4;
+          }
+          .question, .risk-factor {
+              margin-bottom: 15px;
+          }
+          .form-check {
+              margin-bottom: 10px;
+          }
+          .effort-table th {
+              background-color: #f8f9fa;
+          }
+          .phase-header {
+              background-color: #e7f1ff !important;
+              font-weight: bold;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <h1 class="text-center mb-4">Story Point Estimator Questionnaire for Developers</h1>
+          
+          <!-- Questionnaire Accordion -->
+          <div class="accordion mb-4" id="questionnaireAccordion">
+          </div>
 
-      .phase-header {
-          background-color: #e9ecef;
-          font-weight: bold;
-      }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Story Point Estimator Questionnaire for Developers</h1>
-        <div id="questionnaire"></div>
-        <button onclick="calculateStoryPoints()">Calculate Story Points</button>
-        <div id="result"></div>
-    </div><div class="input-section">
-              <h2>Effort Distribution Calculator</h2>
-              <div>
-                  <label for="coreDevelopment">Core Development Effort (in hours):</label>
-                  <input type="number" id="coreDevelopment" min="0" step="0.5">
-                  <button class="calculate-effort-btn" onclick="calculateEffortDistribution()">Calculate Effort Distribution</button>
+          <button class="btn btn-primary w-100 mb-4" onclick="calculateStoryPoints()">Calculate Story Points</button>
+          <div id="result" class="alert alert-success text-center" style="display: none;"></div>
+
+          <!-- Effort Distribution Section -->
+          <div class="card mt-4">
+              <div class="card-header bg-light">
+                  <h2 class="h5 mb-0">Effort Distribution Calculator</h2>
+              </div>
+              <div class="card-body">
+                  <div class="row align-items-end mb-3">
+                      <div class="col-md-8">
+                          <label for="coreDevelopment" class="form-label">Core Development Effort (in hours):</label>
+                          <input type="number" id="coreDevelopment" class="form-control" min="0" step="0.5">
+                      </div>
+                      <div class="col-md-4">
+                          <button class="btn btn-success w-100" onclick="calculateEffortDistribution()">Calculate Effort</button>
+                      </div>
+                  </div>
+
+                  <div class="table-responsive">
+                      <table class="table table-bordered effort-table">
+                          <thead class="table-light">
+                              <tr>
+                                  <th>Activity</th>
+                                  <th>Percentage</th>
+                                  <th>Hours</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>Requirements & Analysis</td>
+                                  <td>15%</td>
+                                  <td id="requirementsHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Design & Architecture</td>
+                                  <td>20%</td>
+                                  <td id="designHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Core Development</td>
+                                  <td>100%</td>
+                                  <td id="coreDevelopmentHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Unit Testing</td>
+                                  <td>20%</td>
+                                  <td id="unitTestingHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Code Review</td>
+                                  <td>15%</td>
+                                  <td id="codeReviewHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Documentation</td>
+                                  <td>10%</td>
+                                  <td id="documentationHours">-</td>
+                              </tr>
+                              <tr>
+                                  <td>Bug Fixes</td>
+                                  <td>15%</td>
+                                  <td id="bugFixesHours">-</td>
+                              </tr>
+                              <tr class="phase-header">
+                                  <td>Total Effort</td>
+                                  <td>195%</td>
+                                  <td id="totalEffortHours">-</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
               </div>
           </div>
-          
-          <table class="effort-table">
-              <thead>
-                  <tr>
-                      <th>Activity</th>
-                      <th>Percentage</th>
-                      <th>Hours</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>Requirements & Analysis</td>
-                      <td>15%</td>
-                      <td id="requirementsHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Design & Architecture</td>
-                      <td>20%</td>
-                      <td id="designHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Core Development</td>
-                      <td>100%</td>
-                      <td id="coreDevelopmentHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Unit Testing</td>
-                      <td>20%</td>
-                      <td id="unitTestingHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Code Review</td>
-                      <td>15%</td>
-                      <td id="codeReviewHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Documentation</td>
-                      <td>10%</td>
-                      <td id="documentationHours">-</td>
-                  </tr>
-                  <tr>
-                      <td>Bug Fixes</td>
-                      <td>15%</td>
-                      <td id="bugFixesHours">-</td>
-                  </tr>
-                  <tr class="phase-header">
-                      <td>Total Effort</td>
-                      <td>195%</td>
-                      <td id="totalEffortHours">-</td>
-                  </tr>
-              </tbody>
-          </table>
-    <script>
-        const questions = [
+      </div>
+
+      <!-- Bootstrap JS and dependencies -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+          const questions = [
             {
                 category: "Design Review",
                 items: [
@@ -260,34 +206,61 @@
             },
         ];
 
-        function generateQuestionnaire() {
-            const questionnaireDiv = document.getElementById('questionnaire');
-            questions.forEach(category => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.innerHTML = `<h2>${category.category}</h2>`;
-                category.items.forEach(question => {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.className = question.type === 'select' ? 'risk-factor' : 'question';
-                    if (question.type === 'select') {
-                        questionDiv.innerHTML = `
-                            <label for="${question.id}">${question.text}</label>
-                            <select id="${question.id}" name="${question.id}">
-                                ${question.options.map(option => `<option value="${option}">${option}</option>`).join('')}
-                            </select>
-                        `;
-                    } else {
-                        questionDiv.innerHTML = `
-                            <input type="checkbox" id="${question.id}" name="${question.id}">
-                            <label for="${question.id}">${question.text}</label>
-                        `;
-                    }
-                    categoryDiv.appendChild(questionDiv);
-                });
-                questionnaireDiv.appendChild(categoryDiv);
-            });
-        }
+          function generateQuestionnaire() {
+              const accordion = document.getElementById('questionnaireAccordion');
+              questions.forEach((category, index) => {
+                  const accordionItem = document.createElement('div');
+                  accordionItem.className = 'accordion-item';
+                  
+                  // Create accordion header
+                  const headerId = `heading${index}`;
+                  const collapseId = `collapse${index}`;
+                  accordionItem.innerHTML = `
+                      <h2 class="accordion-header" id="${headerId}">
+                          <button class="accordion-button ${index !== 0 ? 'collapsed' : ''}" type="button" 
+                                  data-bs-toggle="collapse" data-bs-target="#${collapseId}" 
+                                  aria-expanded="${index === 0}" aria-controls="${collapseId}">
+                              ${category.category}
+                          </button>
+                      </h2>
+                      <div id="${collapseId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+                           aria-labelledby="${headerId}" data-bs-parent="#questionnaireAccordion">
+                          <div class="accordion-body">
+                          </div>
+                      </div>
+                  `;
 
-        function calculateStoryPoints() {
+                  // Add questions to accordion body
+                  const accordionBody = accordionItem.querySelector('.accordion-body');
+                  category.items.forEach(question => {
+                      const questionDiv = document.createElement('div');
+                      questionDiv.className = question.type === 'select' ? 'risk-factor' : 'question';
+                      
+                      if (question.type === 'select') {
+                          questionDiv.innerHTML = `
+                              <div class="mb-3">
+                                  <label for="${question.id}" class="form-label">${question.text}</label>
+                                  <select id="${question.id}" name="${question.id}" class="form-select">
+                                      ${question.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                                  </select>
+                              </div>
+                          `;
+                      } else {
+                          questionDiv.innerHTML = `
+                              <div class="form-check">
+                                  <input type="checkbox" id="${question.id}" name="${question.id}" class="form-check-input">
+                                  <label for="${question.id}" class="form-check-label">${question.text}</label>
+                              </div>
+                          `;
+                      }
+                      accordionBody.appendChild(questionDiv);
+                  });
+                  
+                  accordion.appendChild(accordionItem);
+              });
+          }
+
+function calculateStoryPoints() {
             let totalPoints = 0;
             let riskFactor = 1;
             let confidenceLevel = 1;
@@ -322,9 +295,11 @@
             else if (totalPoints <= 34) fibonacciPoints = 13;
             else fibonacciPoints = 21;
             document.getElementById('result').innerText = `Estimated Story Points: ${fibonacciPoints}`;
+			const resultDiv = document.getElementById('result');
+              resultDiv.style.display = 'block';
+              resultDiv.innerText = `Estimated Story Points: ${fibonacciPoints}`;
         }
-
-        function calculateRiskFactor(value) {
+          function calculateRiskFactor(value) {
             switch (value) {
                 case 'High': case 'Critical dependencies': case 'Major concerns': case 'Significant': return 0.5;
                 case 'Medium': case 'Some dependencies': case 'Minor concerns': case 'Moderate': return 0.3;
@@ -357,8 +332,7 @@
               document.getElementById('bugFixesHours').textContent = bugFixes.toFixed(1);
               document.getElementById('totalEffortHours').textContent = totalEffort.toFixed(1);
           }
-
-        window.onload = generateQuestionnaire;
-    </script>
-</body>
-</html>
+		   window.onload = generateQuestionnaire;
+      </script>
+  </body>
+  </html>
