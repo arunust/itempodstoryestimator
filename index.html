@@ -6,7 +6,7 @@
     <meta name="author" content="arunajithlalithambika">
     <meta name="organization" content="UST">
     <meta name="email" content="u33436@ust.com">
-    <title>Story Point Estimator for Developers</title>
+    <title>Story Point Estimator questionnaire for Developers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,7 +66,52 @@
             padding: 5px;
             margin-top: 5px;
         }
+ .effort-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+      }
+      
+      .effort-table th, .effort-table td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+      }
+      
+      .effort-table th {
+          background-color: #f2f2f2;
+      }
+      
+      .input-section {
+          margin-top: 20px;
+          padding: 15px;
+          background-color: #f8f9fa;
+          border-radius: 5px;
+      }
+      
+      .input-section input {
+          padding: 5px;
+          margin-right: 10px;
+          width: 100px;
+      }
+      
+      .calculate-effort-btn {
+          padding: 5px 15px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+      }
+      
+      .calculate-effort-btn:hover {
+          background-color: #218838;
+      }
 
+      .phase-header {
+          background-color: #e9ecef;
+          font-weight: bold;
+      }
     </style>
 </head>
 <body>
@@ -75,8 +120,7 @@
         <div id="questionnaire"></div>
         <button onclick="calculateStoryPoints()">Calculate Story Points</button>
         <div id="result"></div>
-    </div>
-<div class="input-section">
+    </div><div class="input-section">
               <h2>Effort Distribution Calculator</h2>
               <div>
                   <label for="coreDevelopment">Core Development Effort (in hours):</label>
@@ -94,6 +138,16 @@
                   </tr>
               </thead>
               <tbody>
+                  <tr>
+                      <td>Requirements & Analysis</td>
+                      <td>15%</td>
+                      <td id="requirementsHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Design & Architecture</td>
+                      <td>20%</td>
+                      <td id="designHours">-</td>
+                  </tr>
                   <tr>
                       <td>Core Development</td>
                       <td>100%</td>
@@ -119,9 +173,9 @@
                       <td>15%</td>
                       <td id="bugFixesHours">-</td>
                   </tr>
-                  <tr>
+                  <tr class="phase-header">
                       <td>Total Effort</td>
-                      <td>160%</td>
+                      <td>195%</td>
                       <td id="totalEffortHours">-</td>
                   </tr>
               </tbody>
@@ -287,12 +341,15 @@
         }
           function calculateEffortDistribution() {
               const coreDevelopment = parseFloat(document.getElementById('coreDevelopment').value) || 0;
+              const requirements = coreDevelopment * 0.15;
+              const design = coreDevelopment * 0.20;
               const unitTesting = coreDevelopment * 0.20;
               const codeReview = coreDevelopment * 0.15;
               const documentation = coreDevelopment * 0.10;
               const bugFixes = coreDevelopment * 0.15;
-              const totalEffort = coreDevelopment + unitTesting + codeReview + documentation + bugFixes;
-              
+              const totalEffort = coreDevelopment + requirements + design + unitTesting + codeReview + documentation + bugFixes;
+              document.getElementById('requirementsHours').textContent = requirements.toFixed(1);
+              document.getElementById('designHours').textContent = design.toFixed(1);
               document.getElementById('coreDevelopmentHours').textContent = coreDevelopment.toFixed(1);
               document.getElementById('unitTestingHours').textContent = unitTesting.toFixed(1);
               document.getElementById('codeReviewHours').textContent = codeReview.toFixed(1);
