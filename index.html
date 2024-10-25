@@ -66,6 +66,7 @@
             padding: 5px;
             margin-top: 5px;
         }
+
     </style>
 </head>
 <body>
@@ -75,7 +76,56 @@
         <button onclick="calculateStoryPoints()">Calculate Story Points</button>
         <div id="result"></div>
     </div>
-
+<div class="input-section">
+              <h2>Effort Distribution Calculator</h2>
+              <div>
+                  <label for="coreDevelopment">Core Development Effort (in hours):</label>
+                  <input type="number" id="coreDevelopment" min="0" step="0.5">
+                  <button class="calculate-effort-btn" onclick="calculateEffortDistribution()">Calculate Effort Distribution</button>
+              </div>
+          </div>
+          
+          <table class="effort-table">
+              <thead>
+                  <tr>
+                      <th>Activity</th>
+                      <th>Percentage</th>
+                      <th>Hours</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Core Development</td>
+                      <td>100%</td>
+                      <td id="coreDevelopmentHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Unit Testing</td>
+                      <td>20%</td>
+                      <td id="unitTestingHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Code Review</td>
+                      <td>15%</td>
+                      <td id="codeReviewHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Documentation</td>
+                      <td>10%</td>
+                      <td id="documentationHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Bug Fixes</td>
+                      <td>15%</td>
+                      <td id="bugFixesHours">-</td>
+                  </tr>
+                  <tr>
+                      <td>Total Effort</td>
+                      <td>160%</td>
+                      <td id="totalEffortHours">-</td>
+                  </tr>
+              </tbody>
+          </table>
     <script>
         const questions = [
             {
@@ -209,8 +259,6 @@
 
  
             totalPoints = Math.round(totalPoints * (riskFactor / confidenceLevel));
-
-            // Convert to Fibonacci-like scale
             let fibonacciPoints;
             if (totalPoints <= 2) fibonacciPoints = 1;
             else if (totalPoints <= 5) fibonacciPoints = 2;
@@ -219,7 +267,6 @@
             else if (totalPoints <= 21) fibonacciPoints = 8;
             else if (totalPoints <= 34) fibonacciPoints = 13;
             else fibonacciPoints = 21;
-
             document.getElementById('result').innerText = `Estimated Story Points: ${fibonacciPoints}`;
         }
 
@@ -238,6 +285,22 @@
                 default: return 0.1;
             }
         }
+          function calculateEffortDistribution() {
+              const coreDevelopment = parseFloat(document.getElementById('coreDevelopment').value) || 0;
+              const unitTesting = coreDevelopment * 0.20;
+              const codeReview = coreDevelopment * 0.15;
+              const documentation = coreDevelopment * 0.10;
+              const bugFixes = coreDevelopment * 0.15;
+              const totalEffort = coreDevelopment + unitTesting + codeReview + documentation + bugFixes;
+              
+              document.getElementById('coreDevelopmentHours').textContent = coreDevelopment.toFixed(1);
+              document.getElementById('unitTestingHours').textContent = unitTesting.toFixed(1);
+              document.getElementById('codeReviewHours').textContent = codeReview.toFixed(1);
+              document.getElementById('documentationHours').textContent = documentation.toFixed(1);
+              document.getElementById('bugFixesHours').textContent = bugFixes.toFixed(1);
+              document.getElementById('totalEffortHours').textContent = totalEffort.toFixed(1);
+          }
+
         window.onload = generateQuestionnaire;
     </script>
 </body>
