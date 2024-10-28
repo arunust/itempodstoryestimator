@@ -575,6 +575,9 @@ function calculateConfidenceLevel(values) {
   return 0.7 + (confidenceScore / (maxPossibleScore * 1.5));
 }
 
+// Constants for effort calculation
+const HOURS_PER_STORY_POINT = 8; // 1 story point = 8 hours baseline
+
 function calculateStoryPoints() {
   let totalPoints = 0;
   let riskValues = [];
@@ -620,8 +623,16 @@ function calculateStoryPoints() {
               }
           });
 
+          const rawCategoryScore = categoryScore;
           categoryScore *= sectionWeight * complexityMultiplier;
-          categoryPoints.set(category.category, categoryScore);
+          
+          categoryPoints.set(category.category, {
+              raw: rawCategoryScore,
+              weight: sectionWeight,
+              complexity: complexityMultiplier,
+              final: categoryScore
+          });
+          
           totalPoints += categoryScore;
       }
   });
@@ -634,65 +645,108 @@ function calculateStoryPoints() {
   
   // Map to Fibonacci sequence with smoother transition
   let fibonacciPoints;
-  if (adjustedPoints <= 3) fibonacciPoints = 1;
-  else if (adjustedPoints <= 5) fibonacciPoints = 2;
-  else if (adjustedPoints <= 8) fibonacciPoints = 3;
-  else if (adjustedPoints <= 13) fibonacciPoints = 5;
-  else if (adjustedPoints <= 21) fibonacciPoints = 8;
-  else if (adjustedPoints <= 34) fibonacciPoints = 13;
-  else if (adjustedPoints <= 55) fibonacciPoints = 21;
-  else fibonacciPoints = 34;
+  const fibSequence = [1, 2, 3, 5, 8, 13, 21, 34];
+  
+  // Find the closest Fibonacci number
+  fibonacciPoints = fibSequence.reduce((prev, curr) => {
+      return (Math.abs(curr - adjustedPoints) < Math.abs(prev - adjustedPoints) ? curr : prev);
+  });
 
-  // Display results
+  // Calculate initial effort estimation
+  const estimatedHours = fibonacciPoints * HOURS_PER_STORY_POINT;
+  
+  // Auto-populate the core development effort input
+  document.getElementById('coreDevelopment').value = estimatedHours;
+
+  // Display results with detailed calculations
   const resultDiv = document.getElementById('result');
   const calculationDetails = document.getElementById('calculationDetails');
   
   resultDiv.style.display = 'block';
   calculationDetails.style.display = 'block';
   
-  resultDiv.innerHTML = `<h4>Estimated Story Points: ${fibonacciPoints}</h4>`;
+  resultDiv.innerHTML = `
+      <h4>Estimated Story Points: ${fibonacciPoints}</h4>
+      <p>Estimated Core Development Hours: ${estimatedHours} hours</p>
+  `;
   
   let detailsHTML = `
       <h5>Calculation Details:</h5>
-      <p><strong>Total Base Points:</strong> ${totalPoints.toFixed(1)}</p>
-      <p><strong>Risk Factor:</strong> ${riskFactor.toFixed(2)}</p>
-      <p><strong>Confidence Level:</strong> ${confidenceLevel.toFixed(2)}</p>
-      <p><strong>Adjusted Points:</strong> ${adjustedPoints.toFixed(2)}</p>
-      
-      <div class="selected-items">
-          <h6>Points by Category:</h6>
+      <div class="calculation-breakdown">
+          <h6>1. Base Points Calculation:</h6>
           <ul>
-              ${Array.from(categoryPoints.entries()).map(([category, points]) => 
-                  `<li>${category}: ${points.toFixed(1)} points</li>`
-              ).join('')}
+              ${Array.from(categoryPoints.entries()).map(([category, data]) => `
+                  <li>${category}:
+                      <ul>
+                          <li>Raw points: ${data.raw.toFixed(1)}</li>
+                          <li>Section weight: ${data.weight.toFixed(2)}x</li>
+                          <li>Complexity multiplier: ${data.complexity.toFixed(2)}x</li>
+                          <li>Final category points: ${data.raw.toFixed(1)} × ${data.weight.toFixed(2)} × ${data.complexity.toFixed(2)} = ${data.final.toFixed(1)}</li>
+                      </ul>
+                  </li>
+              `).join('')}
           </ul>
-      </div>
-      
-      <div class="selected-items">
-          <h6>Selected Complexity Factors:</h6>
-          <ul>
-              ${selectedItems.map(item => 
-                  `<li>${item.category}: ${item.text} (Base: ${item.points} points)</li>`
-              ).join('')}
-          </ul>
-      </div>
-      
-      <div class="selected-items">
-          <h6>Risk Factors:</h6>
+          <p><strong>Total Base Points:</strong> ${totalPoints.toFixed(1)} (sum of all category points)</p>
+          
+          <h6>2. Risk Factor Calculation (${riskFactor.toFixed(2)}):</h6>
           <ul>
               ${riskValues.map(value => `<li>${value}</li>`).join('')}
           </ul>
-      </div>
-      
-      <div class="selected-items">
-          <h6>Confidence Factors:</h6>
+          <p>Risk factor formula: 1.0 + (risk_score / max_possible_score) × 0.8</p>
+          
+          <h6>3. Confidence Level Calculation (${confidenceLevel.toFixed(2)}):</h6>
           <ul>
               ${confidenceValues.map(value => `<li>${value}</li>`).join('')}
           </ul>
+          <p>Confidence level formula: 0.7 + (confidence_score / (max_possible_score × 1.5))</p>
+          
+          <h6>4. Final Calculation:</h6>
+          <p>Adjusted Points = Total Base Points × Risk Factor ÷ Confidence Level</p>
+          <p>${totalPoints.toFixed(1)} × ${riskFactor.toFixed(2)} ÷ ${confidenceLevel.toFixed(2)} = ${adjustedPoints.toFixed(2)}</p>
+          
+          <h6>5. Fibonacci Mapping:</h6>
+          <p>Adjusted points (${adjustedPoints.toFixed(2)}) mapped to closest Fibonacci number: ${fibonacciPoints}</p>
+          <p>Fibonacci sequence used: ${fibSequence.join(', ')}</p>
+
+          <h6>6. Effort Estimation:</h6>
+          <p>Core Development Hours = Story Points × Hours per Story Point</p>
+          <p>${fibonacciPoints} × ${HOURS_PER_STORY_POINT} = ${estimatedHours} hours</p>
       </div>
   `;
   
   calculationDetails.innerHTML = detailsHTML;
+
+  // Automatically calculate effort distribution
+  calculateEffortDistribution();
+}
+
+function calculateEffortDistribution() {
+  const coreDevelopmentHours = parseFloat(document.getElementById('coreDevelopment').value);
+  
+  if (isNaN(coreDevelopmentHours) || coreDevelopmentHours <= 0) {
+      toastr.error('Please enter a valid number of hours for core development');
+      return;
+  }
+
+  // Calculate hours for each activity based on percentages
+  const requirementsHours = coreDevelopmentHours * 0.15;
+  const designHours = coreDevelopmentHours * 0.20;
+  const unitTestingHours = coreDevelopmentHours * 0.20;
+  const codeReviewHours = coreDevelopmentHours * 0.15;
+  const documentationHours = coreDevelopmentHours * 0.10;
+  const bugFixesHours = coreDevelopmentHours * 0.15;
+  const totalHours = coreDevelopmentHours + requirementsHours + designHours + 
+                    unitTestingHours + codeReviewHours + documentationHours + bugFixesHours;
+
+  // Update the table with calculated hours
+  document.getElementById('requirementsHours').textContent = requirementsHours.toFixed(1);
+  document.getElementById('designHours').textContent = designHours.toFixed(1);
+  document.getElementById('coreDevelopmentHours').textContent = coreDevelopmentHours.toFixed(1);
+  document.getElementById('unitTestingHours').textContent = unitTestingHours.toFixed(1);
+  document.getElementById('codeReviewHours').textContent = codeReviewHours.toFixed(1);
+  document.getElementById('documentationHours').textContent = documentationHours.toFixed(1);
+  document.getElementById('bugFixesHours').textContent = bugFixesHours.toFixed(1);
+  document.getElementById('totalEffortHours').textContent = totalHours.toFixed(1);
 }
         function calculateEffortDistribution() {
             const coreDevelopment = parseFloat(document.getElementById('coreDevelopment').value) || 0;
