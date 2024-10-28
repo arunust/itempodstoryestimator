@@ -7,6 +7,8 @@
   <meta name="organization" content="UST">
   <meta name="email" content="u33436@ust.com">
   <title>Story Point Estimator</title>
+
+  <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0c63e4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,13 +16,18 @@
   <meta name="application-name" content="Story Point Estimator">
   <meta name="msapplication-TileColor" content="#0c63e4">
   <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+
+  <!-- Favicon and App Icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
+
+  <!-- Existing CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
   
+  <!-- PWA Install Prompt Styles -->
   <style>
       /* Your existing styles here */
       body {
@@ -105,6 +112,7 @@
     <div class="container">
         <h1 class="text-center mb-4">Story Point Estimator Questionnaire For Developers</h1>
         
+        <!-- JSON Controls -->
         <div class="json-controls">
             <div class="row">
                 <div class="col-md-6">
@@ -121,6 +129,7 @@
             </div>
         </div>
         
+        <!-- Questionnaire Accordion -->
         <div class="accordion mb-4" id="questionnaireAccordion">
         </div>
 
@@ -129,6 +138,7 @@
         <div id="calculationDetails" class="alert alert-info" style="display: none;"></div>
 
         <hr class="bg-blue border-2 border-top border-danger" />
+        <!-- Effort Distribution Section -->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -209,12 +219,17 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
+
+
+
     <script>
+      // Default questions array
       const defaultQuestions = [
           {
               category: "Design Review",
@@ -370,7 +385,7 @@
           reader.readAsText(file);
       }
 
-      // Function to download default questions template
+
       function downloadDefaultQuestions() {
           const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(defaultQuestions, null, 2));
           const downloadAnchorNode = document.createElement('a');
@@ -493,7 +508,6 @@
             return 0.5 + (confidenceScore / (maxPossibleScore * 2));
         }
 
-  
         function calculateSectionWeight(category) {
   // Define weights for different categories
   const weights = {
@@ -727,9 +741,11 @@ function calculateStoryPoints() {
     <button id="closePrompt" class="btn btn-link text-white ms-2">&times;</button>
 </div>
 
+<!-- PWA Registration Script -->
 <script>
     let deferredPrompt;
 
+    // Register Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js')
@@ -742,12 +758,14 @@ function calculateStoryPoints() {
         });
     }
 
+    // Handle Install Prompt
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         document.getElementById('installPrompt').style.display = 'flex';
     });
 
+    // Install button click handler
     document.getElementById('installButton').addEventListener('click', (e) => {
         document.getElementById('installPrompt').style.display = 'none';
         if (deferredPrompt) {
@@ -761,6 +779,7 @@ function calculateStoryPoints() {
         }
     });
 
+    // Close prompt button handler
     document.getElementById('closePrompt').addEventListener('click', () => {
         document.getElementById('installPrompt').style.display = 'none';
     });
